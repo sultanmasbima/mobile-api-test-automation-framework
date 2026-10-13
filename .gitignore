@@ -14,3 +14,8 @@ allure-results/
 # Local secrets / overrides - never commit
 *.local.properties
 .env
+
+# Mobile app binaries (downloaded by scripts/download-demo-app.sh)
+apps/
+*.apk
+*.ipa

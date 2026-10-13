@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- Mobile suite: run locally with Appium + emulator (see README "Mobile setup") -->
+<suite name="Automation Portfolio - Mobile Android">
+    <test name="Mobile">
+        <classes>
+            <class name="runners.MobileRunner"/>
+        </classes>
+    </test>
+</suite>

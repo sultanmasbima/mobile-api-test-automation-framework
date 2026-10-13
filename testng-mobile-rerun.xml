@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Automation Portfolio - Mobile Rerun Failed">
+    <test name="Mobile - failed only">
+        <classes>
+            <class name="runners.FailedMobileRunner"/>
+        </classes>
+    </test>
+</suite>
