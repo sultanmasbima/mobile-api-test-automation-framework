@@ -1,0 +1,14 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!-- Re-runs only the scenarios that failed in the last testng.xml run -->
+<suite name="Automation Portfolio - Rerun Failed" data-provider-thread-count="1">
+    <test name="API - failed only">
+        <classes>
+            <class name="runners.FailedApiRunner"/>
+        </classes>
+    </test>
+    <test name="Web - failed only">
+        <classes>
+            <class name="runners.FailedWebRunner"/>
+        </classes>
+    </test>
+</suite>

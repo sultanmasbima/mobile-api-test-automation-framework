@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Automation Portfolio - Dry Run">
+    <test name="Step definition check">
+        <classes>
+            <class name="runners.DryRunRunner"/>
+        </classes>
+    </test>
+</suite>

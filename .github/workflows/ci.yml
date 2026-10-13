@@ -1,0 +1,80 @@
+name: Test Automation CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # Nightly regression at 01:00 WIB (18:00 UTC)
+    - cron: "0 18 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      # Quality gate 1: every Gherkin step must have a step definition (fast, no browser/API)
+      - name: Dry run
+        run: mvn -B test -Dsuite=testng-dryrun.xml
+
+      # Full run. Failures do not stop the job yet: failed scenarios are retried in the next step
+      - name: Run API & Web tests
+        run: mvn -B test -Dweb.headless=true -Dmaven.test.failure.ignore=true
+
+      # Quality gate 2: a scenario that fails again on retry is a real failure and fails the job
+      - name: Re-run failed scenarios
+        run: mvn -B test -Dsuite=testng-rerun.xml -Dweb.headless=true
+
+      - name: Generate Allure report
+        if: always()
+        run: npx --yes allure-commandline@2.46.1 generate target/allure-results --clean -o target/allure-report
+
+      - name: Upload Allure report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: target/allure-report
+
+      - name: Upload Cucumber reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-reports
+          path: target/cucumber-reports
+
+      - name: Prepare report for GitHub Pages
+        if: always() && github.ref == 'refs/heads/main' && !github.event.repository.private
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: target/allure-report
+
+  # Publishes the Allure report as a website. Only for public repositories
+  # (GitHub Pages on private repositories requires a paid plan).
+  # One-time setup: Settings > Pages > Source = "GitHub Actions".
+  publish-report:
+    needs: test
+    if: always() && github.ref == 'refs/heads/main' && !github.event.repository.private
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
