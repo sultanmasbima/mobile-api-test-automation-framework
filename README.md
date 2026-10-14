@@ -215,6 +215,8 @@ src
 
 **Requirements:** JDK 21+, Maven 3.9+, Google Chrome. Browser drivers are downloaded automatically by Selenium Manager.
 
+📖 Full step-by-step guide, live demo script and troubleshooting: [docs/RUNNING_TESTS.md](docs/RUNNING_TESTS.md)
+
 ```bash
 # API + Web (what CI runs), headless
 mvn test
