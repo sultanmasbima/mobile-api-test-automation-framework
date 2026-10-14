@@ -37,9 +37,21 @@ jobs:
       - name: Re-run failed scenarios
         run: mvn -B test -Dsuite=testng-rerun.xml -Dweb.headless=true
 
+      # --single-file embeds all data in one index.html, so the downloaded report
+      # opens with a double-click (a multi-file report needs a web server)
       - name: Generate Allure report
         if: always()
-        run: npx --yes allure-commandline@2.46.1 generate target/allure-results --clean -o target/allure-report
+        run: npx --yes allure-commandline@2.46.1 generate target/allure-results --clean --single-file -o target/allure-report
+
+      # Rerun reports are only useful when something was actually re-run
+      - name: Remove empty rerun reports
+        if: always()
+        run: |
+          for layer in api web; do
+            if [ ! -s "target/rerun/$layer.txt" ]; then
+              rm -f "target/cucumber-reports/$layer-rerun.html"
+            fi
+          done
 
       - name: Upload Allure report
         if: always()

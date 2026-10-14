@@ -263,7 +263,7 @@ mvn test -Dsuite=testng-mobile.xml -Dmobile.udid=<your-device-id>
 |---|---|
 | Allure | `npx allure-commandline serve target/allure-results` |
 | Cucumber HTML | `target/cucumber-reports/{mobile,api,web}.html` |
-| CI | *Actions* tab → run → **Artifacts** (`allure-report`, `cucumber-reports`) |
+| CI | *Actions* tab → run → **Artifacts** → download & unzip `allure-report` → open `index.html` (single-file report, no server needed) |
 
 ---
 
